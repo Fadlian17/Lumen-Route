@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Author;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use PHPUnit\Framework\MockObject\Builder\Identity;
 
 class AuthorController extends Controller
@@ -48,7 +49,8 @@ class AuthorController extends Controller
 
         ];
 
-        return response()->json(["message" => "Success View", "author" => $authors]);
+        return response()->json(["message" => "Success View", "author" => $authors])
+            ->header('author', 'fadlian');
     }
 
     public function create(Request $request)
