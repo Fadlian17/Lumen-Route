@@ -26,7 +26,7 @@ class AuthController extends BaseController
      */
     public function __construct(Request $request)
     {
-        $this->request = $request;
+        //
     }
     /**
      * Create a new token.
@@ -34,18 +34,19 @@ class AuthController extends BaseController
      * @param  \App\User   $user
      * @return string
      */
-    protected function jwt(User $user)
+    protected function token()
     {
-        $payload = [
+        $key_token = "kode_token";
+        $reload = [
             'iss' => "lumen-jwt", // Issuer of the token
-            'sub' => $user->id, // Subject of the token
+            'sub' => "for-auth", // Subject of the token
             'iat' => time(), // Time when JWT was issued.
             'exp' => time() + 60 * 60 // Expiration time
         ];
 
         // As you can see we are passing `JWT_SECRET` as the second parameter that will
         // be used to decode the token in the future.
-        return JWT::encode($payload, env('JWT_SECRET'));
+        return JWT::encode($reload, $key_token);
     }
     /**
      * Authenticate a user and return the token if the provided credentials are correct.
@@ -53,32 +54,41 @@ class AuthController extends BaseController
      * @param  \App\User   $user
      * @return mixed
      */
-    public function authenticate(User $user)
+    public function authenticate(Request $user)
     {
-        $this->validate($this->request, [
+        $this->validate($user, [
             'email'     => 'required|email',
             'password'  => 'required'
         ]);
-        // Find the user by email
-        $user = User::where('email', $this->request->input('email'))->first();
-        if (!$user) {
-            // You wil probably have some sort of helpers or whatever
-            // to make sure that you have the same response format for
-            // differents kind of responses. But let's return the
-            // below respose for now.
-            return response()->json([
-                'error' => 'Email does not exist.'
-            ], 400);
-        }
-        // Verify the password and generate the token
-        if (Hash::check($this->request->input('password'), $user->password)) {
-            return response()->json([
-                'token' => $this->jwt($user)
-            ], 200);
-        }
+        // // Find the user by email
+        // $user = User::where('email', $this->request->input('email'))->first();
+        // if (!$user) {
+        //     // You wil probably have some sort of helpers or whatever
+        //     // to make sure that you have the same response format for
+        //     // differents kind of responses. But let's return the
+        //     // below respose for now.
+        //     return response()->json([
+        //         'error' => 'Email does not exist.'
+        //     ], 400);
+        // }
+        // // Verify the password and generate the token
+        // if (Hash::check($this->request->input('password'), $user->password)) {
+        //     return response()->json([
+        //         'token' => $this->jwt($user)
+        //     ], 200);
+        // }
+
+        $email = $user->input('email');
+        $password = $user->input('password');
+
         // Bad Request response
         return response()->json([
-            'error' => 'Email or password is wrong.'
-        ], 400);
+            "message" => "Success Get Token \n",
+            'token' => [
+                'email' => $email,
+                'password' => $password,
+            ],
+            'token' => $this->token()
+        ]);
     }
 }
