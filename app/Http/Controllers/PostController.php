@@ -19,118 +19,95 @@ class PostController extends Controller
 
     public function index()
     {
-        $posts = [
-            [
-                "id" => 1,
-                "title" => "Vlog Bareng Presiden",
-                "content" => "dokumenter",
-                "tags" => "vlog,bincang",
-                "status" => "Active",
-                "author_id" => 1
-            ],
-            [
-                "id" => 2,
-                "title" => "Programming Dan Desain Bareng Refactory",
-                "content" => "belajar",
-                "tags" => "IT",
-                "status" => "Active",
-                "author_id" => 2
-            ],
-            [
-                "id" => 3,
-                "title" => "Bootcamp Bareng Refactory",
-                "content" => "belajar",
-                "tags" => "IT",
-                "status" => "Active",
-                "author_id" => 2
-            ]
-        ];
+        $posts = Post::with(array('author' => function ($query) {
+            $query->select();
+        }))->get();
 
-        return response()->json(["results" => $posts]);
+        if (!$posts) {
+            return response()->json([
+                'message' => 'Data Not Found'
+            ]);
+        }
+        return response()->json(['results' => $posts]);
     }
 
     public function create(Request $request)
     {
         $this->validate($request, [
-            "id" => 'required',
-            "title" => 'required',
-            "content" => 'required',
-            "tags" => 'required',
-            "status" => 'required',
-            "author_id" => 'required'
+            'title' => 'required',
+            'content' => 'required',
+            'tags' => 'required',
+            'status' => 'required',
+            'author_id' => 'required'
         ]);
 
-        $titles = $request->input("title");
-        $content = $request->input("content");
-        $tags = $request->input("tag");
-        $statuss = $request->input("status");
-        $authors_id = $request->input("author_id");
 
-        $posts = [
-            [
-                "id" => rand(1, 100),
-                "title" => $titles,
-                "content" => $content,
-                "tags" => $tags,
-                "status" => $statuss,
-                "author_id" => $authors_id
-            ]
-        ];
-        return response()->json(["message" => "Success Add Post", "post" => $posts]);
+        $posts = new Post();
+        $posts->title = $request->input('title');
+        $posts->content = $request->input('content');
+        $posts->tags = $request->input('tags');
+        $posts->status = $request->input('status');
+        $posts->author_id = $request->input('author_id');
+        $posts->save();
+
+        return response()->json(['message' => 'Success Add Post', 'post' => $posts]);
     }
 
-    public function show($id)
-    {
-        $posts = [
-            [
-                "id" => 1,
-                "title" => "Vlog Bareng Presiden",
-                "content" => "dokumenter",
-                "tags" => "vlog,bincang",
-                "status" => "Active",
-                "author_id" => 1
-            ],
-        ];
-        return response()->json(["message" => "Success View Post", "post" => $posts]);
-    }
+    // public function show($id)
+    // {
+    //     $posts = [
+    //         [
+    //             'id' => 1,
+    //             'title' => 'Vlog Bareng Presiden',
+    //             'content' => 'dokumenter',
+    //             'tags' => 'vlog,bincang',
+    //             'status' => 'Active',
+    //             'author_id' => 1
+    //         ],
+    //     ];
+    //     return response()->json(['message' => 'Success View Post', 'post' => $posts]);
+    // }
 
     public function update(Request $request, $id)
     {
         $this->validate($request, [
-            "id" => 'required',
-            "title" => 'required',
-            "content" => 'required',
-            "tags" => 'required',
-            "status" => 'required',
-            "author_id" => 'required'
+            'id' => 'required',
+            'title' => 'required',
+            'content' => 'required',
+            'tags' => 'required',
+            'status' => 'required',
+            'author_id' => 'required|exists:authors,id',
         ]);
 
-        $titles = $request->input("title");
-        $content = $request->input("content");
-        $tags = $request->input("tag");
-        $statuss = $request->input("status");
-        $authors_id = $request->input("author_id");
-
-        $posts = [
-            [
-                "id" => $id,
-                "title" => $titles,
-                "content" => $content,
-                "tags" => $tags,
-                "status" => $statuss,
-                "author_id" => $authors_id
-            ]
-        ];
-        return response()->json(["message" => "Success Update Post", "post" => $posts]);
+        $posts = Post::find($id);
+        if ($posts) {
+            $posts->title = $request->input('title');
+            $posts->content = $request->input('content');
+            $posts->tags = $request->input('tag');
+            $posts->status = $request->input('status');
+            $posts->author_id = $request->input('author_id');
+            $posts->save();
+            return response()->json(['message' => 'Success Update Post', 'post' => $posts]);
+        } else {
+            return response()->json(['message' => 'data undifined']);
+        }
     }
 
     public function destroy($id)
     {
-        return response()->json([
-            "message" => "Success Deleted",
-            "post" => [
-                "id" => $id
-            ]
-        ]);
+        $posts = Post::find($id);
+        if ($posts) {
+            $posts->delete();
+            return response()->json([
+                'message' => 'Success Deleted',
+                'post' => [
+                    'post' => $posts
+                ]
+            ]);
+        } else {
+            return response()->json([
+                'message' => 'Delete Data Not Found'
+            ]);
+        }
     }
 }

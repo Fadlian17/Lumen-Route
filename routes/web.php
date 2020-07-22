@@ -19,15 +19,15 @@ $router->post('/rest/api/token', 'AuthController@authenticate');
 
 
 $router->group(['middleware' => 'auth.jwt'], function () use ($router) {
-    // $router->group(['prefix' => 'rest/api'], function () use ($router) {
+    $router->group(['prefix' => 'rest/api'], function () use ($router) {
 
-    //Author
-    $router->get('/author', 'AuthorController@index');
-    $router->post('/author', 'AuthorController@create');
-    $router->get('/author/{id}', 'AuthorController@show');
-    $router->patch('/author/{id}', 'AuthorController@update');
-    $router->delete('/author/{id}', 'AuthorController@destroy');
-    // });
+        //Author
+        $router->get('/author', 'AuthorController@index');
+        $router->post('/author', 'AuthorController@create');
+        $router->get('/author/{id}', 'AuthorController@show');
+        $router->patch('/author/{id}', 'AuthorController@update');
+        $router->delete('/author/{id}', 'AuthorController@destroy');
+    });
 });
 
 $router->group(['middleware' => 'auth.jwt'], function () use ($router) {

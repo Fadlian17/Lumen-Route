@@ -22,3 +22,24 @@ $factory->define(User::class, function (Faker $faker) {
         'email' => $faker->email,
     ];
 });
+
+
+$factory->define('App\Author', function (Faker $faker) {
+    return [
+        'name' => $faker->name,
+        'email' => $faker->email,
+        'password' => $faker->password,
+        'profile' => $faker->text,
+        'salt' => $faker->regexify('[A-Za-z0-9]{5}'),
+    ];
+});
+
+$factory->define('App\Post', function (Faker $faker) {
+    return [
+        'title' => $faker->title,
+        'content' => $faker->text,
+        'tags' => $faker->text,
+        'status' => $faker->randomElement,
+        'author_id' => $faker->numberBetween,
+    ];
+});

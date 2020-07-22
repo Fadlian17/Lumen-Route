@@ -18,8 +18,8 @@ class CreatePostsTable extends Migration
             $table->string('title');
             $table->string('content');
             $table->string('tags');
-            $table->float('status');
-            $table->integer('author_id');
+            $table->string('status');
+            $table->string('author_id');
             $table->timestamps();
         });
     }
