@@ -83,11 +83,11 @@ class AuthorController extends Controller
 
         $authors = Author::find($id);
         if ($authors) {
-            $authors->names = $request->input('name');
-            $authors->passwords = $request->input('password');
-            $authors->salts = $request->input('salt');
-            $authors->emails = $request->input('email');
-            $authors->profiles = $request->input('profile');
+            $authors->name = $request->input('name');
+            $authors->password = $request->input('password');
+            $authors->salt = $request->input('salt');
+            $authors->email = $request->input('email');
+            $authors->profile = $request->input('profile');
             $authors->save();
 
             return response()->json(['message' => 'Success Update Author', 'author' => $authors]);
