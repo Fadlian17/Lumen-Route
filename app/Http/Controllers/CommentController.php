@@ -89,12 +89,14 @@ class CommentController extends Controller
             $comments->content = $request->input('content');
             $comments->status = $request->input('status');
             $comments->author_id = $request->input('author_id');
+            $comments->email = $request->input('email');
             $comments->url = $request->input('url');
             $comments->post_id = $request->input('post_id');
             $comments->save();
+            return response()->json(['message' => 'Success Update Comment', 'comment' => $comments]);
+        } else {
+            return response()->json(['message' => 'data undifined']);
         }
-
-        return response()->json(['message' => 'Success Update Comment', 'comment' => $comments]);
     }
 
     public function destroy($id)

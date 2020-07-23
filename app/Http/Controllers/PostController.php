@@ -71,7 +71,6 @@ class PostController extends Controller
     public function update(Request $request, $id)
     {
         $this->validate($request, [
-            'id' => 'required',
             'title' => 'required',
             'content' => 'required',
             'tags' => 'required',
@@ -83,7 +82,7 @@ class PostController extends Controller
         if ($posts) {
             $posts->title = $request->input('title');
             $posts->content = $request->input('content');
-            $posts->tags = $request->input('tag');
+            $posts->tags = $request->input('tags');
             $posts->status = $request->input('status');
             $posts->author_id = $request->input('author_id');
             $posts->save();
